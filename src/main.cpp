@@ -46,8 +46,8 @@ class $modify(CustomEndLevelLayer, EndLevelLayer) {
 		actions_array->addObject(CCDelayTime::create(0.5f));
 		actions_array->addObject(action);
 
-		runAction(
-			CCSequence::create(actions_array)
-		);
+		// runAction(
+		// 	CCSequence::create(actions_array)
+		// );
 	}
 };
