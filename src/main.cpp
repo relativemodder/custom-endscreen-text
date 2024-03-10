@@ -9,6 +9,16 @@ class $modify(CustomEndLevelLayer, EndLevelLayer) {
 
 	void customSetup() {
 		EndLevelLayer::customSetup();
+
+		if (Loader::get()->getLoadedMod("suntle.compactendscreen")) {
+			FLAlertLayer::create(
+				"Error!", 
+				"<cr>Error!</c> Custom End Text <cy>is not compatible</c> with <cr>Compact Endscreen Mod!</c>", 
+				"OK"
+			)->show();
+			return;
+		}
+
 		auto value = Mod::get()->getSettingValue<std::string>("static-text");
 		auto text_scale = Mod::get()->getSettingValue<double>("static-text-scale");
 
