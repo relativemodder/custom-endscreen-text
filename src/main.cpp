@@ -5,6 +5,48 @@ using namespace geode::prelude;
 #include <Geode/modify/EndLevelLayer.hpp>
 
 
+std::vector<std::string> split(std::string s, std::string delimiter) {
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    std::string token;
+    std::vector<std::string> res;
+
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        token = s.substr (pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_len;
+        res.push_back (token);
+    }
+
+    res.push_back (s.substr (pos_start));
+    return res;
+}
+
+
+std::string getRandomTextString() {
+	auto path = Mod::get()->getSettingValue<ghc::filesystem::path>("strings-file");
+	auto result = geode::utils::file::readString(path);
+
+	log::debug("Path: {}", path);
+
+	if (!result) {
+		auto error_ = std::string(result.error().c_str());
+		FLAlertLayer::create(
+			"Error!", 
+			gd::string(std::string(std::string("<cr>Error: </c>") + error_).c_str()), 
+			"OK"
+		)->show();
+		return error_;
+	}
+
+	auto content = result.unwrap();
+	auto strings = split(content, "\n");
+
+    int randomIndex = rand() % strings.size();
+    std::string selectedElement = strings[randomIndex];
+
+	return selectedElement;
+}
+
+
 class $modify(CustomEndLevelLayer, EndLevelLayer) {
 
 	void customSetup() {
@@ -19,7 +61,9 @@ class $modify(CustomEndLevelLayer, EndLevelLayer) {
 			return;
 		}
 
-		auto value = Mod::get()->getSettingValue<std::string>("static-text");
+		//auto value = Mod::get()->getSettingValue<std::string>("static-text");
+
+		auto value = getRandomTextString();
 		auto text_scale = Mod::get()->getSettingValue<double>("static-text-scale");
 
 		auto complete_message = static_cast<TextArea*>(getChildByIDRecursive("complete-message"));
